@@ -1,14 +1,24 @@
 provider "aws" {
-  access_key = "AKIAJDCRGDFJRBHUGOYQ"
-  secret_key = "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"
-  region     = "us-west-2"
+  access_key = "${var.access.key}"
+  secret_key = "${var.secret_key}"
+  region     = "${var.region}"
 }
 
 resource "aws_instance" "example" {
-  ami           = "ami-b7a114d7"
+  ami           = "ami-b73d6cd7"
   instance_type = "t2.micro"
+
+  provisioner "local-exec" {
+    command = "echo ${aws_instance.example.public_ip} > ip_address.txt"
+  }
 }
 
 resource "aws_eip" "ip" {
-    instance = "${aws_instance.example.id}"
+    instance = "${aws_instance.another.id}"
+}
+
+resource "aws_instance" "another" {
+  ami = "ami-b73d6cd7"
+  instance_type = "t2.micro"
+  depends_on = ["aws_instance.example"]
 }
