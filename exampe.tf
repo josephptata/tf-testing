@@ -4,21 +4,7 @@ provider "aws" {
   region     = "${var.region}"
 }
 
-resource "aws_instance" "example" {
-  ami           = "ami-b73d6cd7"
-  instance_type = "t2.micro"
+module "example" {
+  source = "github.com/josephptata/tf-module"
 
-  provisioner "local-exec" {
-    command = "echo ${aws_instance.example.public_ip} > ip_address.txt"
-  }
-}
-
-resource "aws_eip" "ip" {
-    instance = "${aws_instance.another.id}"
-}
-
-resource "aws_instance" "another" {
-  ami = "ami-b73d6cd7"
-  instance_type = "t2.micro"
-  depends_on = ["aws_instance.example"]
 }
